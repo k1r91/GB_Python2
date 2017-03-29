@@ -1,3 +1,4 @@
+__author__ = "Kirill Cherkasov"
 import random
 import string
 

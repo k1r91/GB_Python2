@@ -75,11 +75,21 @@ def get_file_extension(file):
     pattern = r'{0}: ([A-Z]*)'.format(file)
     raw_string = subprocess.check_output(['file', file]).decode('utf-8')
     print(raw_string)
-    return re.findall(pattern, raw_string)[0]
+    return re.findall(pattern, raw_string)[0].lower()
 
 
-def split_file(file_name, split_size):
-    pass
+def part_file(file_name, piece_size, destination_folder='parted'):
+    count = 0
+    with open(file_name, 'rb') as source_file:
+        while True:
+            tmp = source_file.read(piece_size)
+            if tmp == b'':
+                break
+            parted_file_name = hashlib.md5(tmp).hexdigest()
+            with open(os.path.join(destination_folder, parted_file_name), 'wb') as parted_file:
+                parted_file.write(tmp)
+            count += 1
+    return count
 
 
 def main():
@@ -90,5 +100,5 @@ def main():
         create_file("/test2.txt", ".", '1024')
         create_file("/test11.txt", ".", '2MB')
         create_file("/test21.txt", ".", '1B')
-
+        part_file('file1.jpeg', 1024)
 main()

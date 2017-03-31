@@ -11,13 +11,13 @@ def create_file(namef, dir_name, size):
     if not size.isdigit():
         if size.endswith('KB'):
             s1 = size.split('KB')
-            size1 = int(s1[0])*1024
+            size1 = int(s1[0]) * 1024
             token = ''.join(random.choice(
                 string.ascii_uppercase + string.ascii_lowercase +
                 string.digits) for x in range(size1))
         if size.endswith('MB'):
             s1 = size.split('MB')
-            size1 = int(s1[0])*1048567
+            size1 = int(s1[0]) * 1048576
             token = ''.join(random.choice(
                 string.ascii_uppercase + string.ascii_lowercase +
                 string.digits) for x in range(size1))
@@ -33,11 +33,15 @@ def create_file(namef, dir_name, size):
         token
     except NameError:
         token = 's'
+    if not os.path.exists(os.path.join(os.getcwd(), dir_name)):
+        os.mkdir(dir_name)
     file = open(dir_name + namef, "w")
     file.write(token)
+    file.close()
+    return os.path.getsize(os.path.join(os.getcwd(), dir_name, namef[1:]))
 
 
-def glue_together(files_dir, hash_file, outfile):
+def glue_files(files_dir, hash_file, outfile):
     '''
     склеивает файлы из директории files_dir выбирая за основу
     hash_file, склеивает всё в outfile
@@ -60,21 +64,20 @@ def glue_together(files_dir, hash_file, outfile):
         for file_name in result.values():
             with open(os.path.join(files_dir, file_name), 'rb') as file:
                 out.write(file.read())
-    os.rename(outfile, '.'.join((outfile,get_file_extension(outfile))))
+    raw_string = subprocess.check_output(['file', outfile]).decode('utf-8')
+    os.rename(outfile, '.'.join((outfile, get_file_extension(raw_string))))
     return len(result)
 
 
-def get_file_extension(file):
+def get_file_extension(raw_string):
     '''
     с помощью утилиты file (Unix) опрелеляет тип файла
     и возвращает его расширение, выбирая из вывода утилиты при
     помощи регулярного выражения нужные символы
-    :param file:
+    :param raw_string:
     :return:
     '''
-    pattern = r'{0}: ([A-Z]*)'.format(file)
-    raw_string = subprocess.check_output(['file', file]).decode('utf-8')
-    print(raw_string)
+    pattern = r'[a-z]*: ([A-Z]*)'
     return re.findall(pattern, raw_string)[0].lower()
 
 
@@ -94,11 +97,12 @@ def part_file(file_name, piece_size, destination_folder='parted'):
 
 def main():
     if __name__ == '__main__':
-        glue_together('files/file2/', 'parts.md5', 'file2')
-        glue_together('files/file1/', 'parts.md5', 'file1')
-        create_file("/test1.txt", ".", '10KB')
-        create_file("/test2.txt", ".", '1024')
-        create_file("/test11.txt", ".", '2MB')
-        create_file("/test21.txt", ".", '1B')
+        glue_files('files/file2/', 'parts.md5', 'file2')
+        glue_files('files/file1/', 'parts.md5', 'file1')
+        print(create_file("/test1.txt", ".", '10KB'))
+        print(create_file("/test2.txt", ".", '1024'))
+        print(create_file("/test11.txt", ".", '2MB'))
+        print(create_file("/test21.txt", ".", '1B'))
         part_file('file1.jpeg', 1024)
+        print()
 main()

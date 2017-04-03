@@ -1,8 +1,9 @@
-
+__author__ = "Kirill Cherkasov"
 # Сервер игры "Запоминалка"
 
 import socketserver
 import random
+
 
 class MemTCPHandler(socketserver.BaseRequestHandler):
 
@@ -24,7 +25,7 @@ class MemTCPHandler(socketserver.BaseRequestHandler):
 HOST, PORT = 'localhost', 9999
 
 server = socketserver.TCPServer((HOST, PORT), MemTCPHandler)  
-print('Сервер игры запущен')
+print('Сервер запущен')
 
 server.serve_forever()
 

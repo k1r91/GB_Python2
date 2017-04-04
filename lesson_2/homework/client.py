@@ -17,6 +17,8 @@ class PaymentTerminal:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((self.host, self.port))
         sock.sendall(transaction.serialize())
+        recvd = str(sock.recv(1024), 'utf-8')
+        print(recvd)
         sock.close()
 
 

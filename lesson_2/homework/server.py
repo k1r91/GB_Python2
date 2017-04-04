@@ -2,24 +2,34 @@ __author__ = "Kirill Cherkasov"
 # Сервер игры "Запоминалка"
 
 import socketserver
-import random
+from transaction import Transaction
 
 
 class MemTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         self.data = self.request.recv(1024).decode()
-        print("Клиент {} сообщает {}".format(self.client_address[0], self.data))
+        # print("Клиент {} сообщает {}".format(self.client_address[0], self.data))
+        transaction = Transaction.deserialize(self.data)
+        if transaction:
+            log = "Received from {} {} at {}".format(self.client_address[0],
+                                           transaction,
+                                            transaction.time)
 
-        if self.data == "I_WANNA_PLAY":
-            nums = random.sample(range(1,100), 18) * 2
-            random.shuffle(nums)
-            s_nums = [str(n) for n in nums]
-            s_nums = ';'.join(s_nums)
-
-            self.request.sendall(bytes('NUMS;'+s_nums, 'utf-8'))
+            # обработка транзакции
+            self.process(transaction)
+            # записываем лог
+            self.write(log)
+            # посылаем ответ
+            self.request.sendall(bytes('OK', 'utf-8'))
         else:
-            print('Неизвестный запрос')    
+            print("Unknown request")
+
+    def write(self, data):
+        print(data)
+
+    def process(self, transaction):
+        pass
 
           
 HOST, PORT = 'localhost', 9999
@@ -28,4 +38,5 @@ server = socketserver.TCPServer((HOST, PORT), MemTCPHandler)
 print('Сервер запущен')
 
 server.serve_forever()
+server.server_close()
 

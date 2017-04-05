@@ -4,17 +4,18 @@ __author__ = "Kirill Cherkasov"
 import socketserver
 from transaction import Transaction
 
+socketserver.TCPServer.allow_reuse_address = True
+
 
 class MemTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
-        self.data = self.request.recv(1024).decode()
-        # print("Клиент {} сообщает {}".format(self.client_address[0], self.data))
+        self.data = self.request.recv(1024)
+        print("Клиент {} сообщает {}".format(self.client_address[0], self.data))
         transaction = Transaction.deserialize(self.data)
         if transaction:
-            log = "Received from {} {} at {}".format(self.client_address[0],
-                                           transaction,
-                                            transaction.time)
+            log = "Received from {} {} {}".format(self.client_address[0],
+                                           transaction, transaction.time)
 
             # обработка транзакции
             self.process(transaction)
@@ -23,7 +24,7 @@ class MemTCPHandler(socketserver.BaseRequestHandler):
             # посылаем ответ
             self.request.sendall(bytes('OK', 'utf-8'))
         else:
-            print("Unknown request")
+           print("Unknown request")
 
     def write(self, data):
         print(data)

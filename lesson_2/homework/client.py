@@ -9,9 +9,11 @@ from transaction import *
 
 class PaymentTerminal:
 
-    def __init__(self, host='localhost', port=9999):
+    def __init__(self, id, host='localhost', port=9999):
         self.host = host
         self.port = port
+        self.id = id
+        self.transaction_id = 0
 
     def execute(self, transaction):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,17 +23,31 @@ class PaymentTerminal:
         print(recvd)
         sock.close()
 
+    def make_payment_transaction(self, data):
+        self.transaction_id += 1
+        return PaymentTransaction(self.id, self.transaction_id, data)
+
+    def make_encashment(self, data):
+        self.transaction_id += 1
+        return EncashmentTransaction(self.id, self.transaction_id,data)
+
+    def make_service_request(self, data):
+        self.transaction_id += 1
+        return ServiceTransaction(self.id, self.transaction_id, data)
 
 def main():
     if __name__ == '__main__':
-        transaction_pool = [PaymentTransaction((25, 1000)),
-                            PaymentTransaction((32, 2000)),
-                            PaymentTransaction((25, 5000)),
-                            PaymentTransaction((42, 2000)),
-                            EncashmentTransaction((1, 1000))]
-        terminal = PaymentTerminal()
-        for transaction in transaction_pool:
+        terminal = PaymentTerminal(324)
+        pool = [
+            terminal.make_payment_transaction((4, 10)),
+            terminal.make_payment_transaction((24, 1023)),
+            terminal.make_payment_transaction((32, 2048)),
+            terminal.make_service_request('reload'),
+            terminal.make_encashment((25, 1000))
+        ]
+        for transaction in pool:
             terminal.execute(transaction)
+
 main()
 
 '''print('Клиент запущен')

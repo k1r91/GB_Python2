@@ -2,7 +2,8 @@ __author__ = "Kirill Cherkasov"
 # Сервер игры "Запоминалка"
 
 import socketserver
-from transaction import Transaction
+
+from main.transaction import Transaction
 
 socketserver.TCPServer.allow_reuse_address = True
 
@@ -32,12 +33,21 @@ class MemTCPHandler(socketserver.BaseRequestHandler):
     def process(self, transaction):
         pass
 
-          
-HOST, PORT = 'localhost', 9999
 
-server = socketserver.TCPServer((HOST, PORT), MemTCPHandler)  
-print('Сервер запущен')
+class Server:
 
-server.serve_forever()
-server.server_close()
+    def __init__(self, host='localhost', port=9999):
+        self.host, self.port = host, port
 
+    def serve(self):
+        server = socketserver.TCPServer((self.host, self.port), MemTCPHandler)
+        print("Сервер запущен")
+        server.serve_forever()
+
+
+def main():
+    server = Server()
+    server.serve()
+
+if __name__ == '__main__':
+    main()

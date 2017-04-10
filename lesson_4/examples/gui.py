@@ -143,7 +143,7 @@ main_window.resizable(width=False, height=False)
 
 # Установим заголовок окна и значок:
 main_window.title('Звёздный администратор')
-main_window.iconbitmap('favicon.ico')
+#main_window.iconbitmap('favicon.ico')
 
 
 # Создадим "наши" виджеты: таблицу и статусную строку:

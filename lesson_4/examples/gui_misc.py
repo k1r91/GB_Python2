@@ -20,6 +20,7 @@ class ManageButtons(Frame):
             for btn, callback in btns_dict.items():
                 # Кнопки будут создаваться с изображениями
                 img_file=os.path.join("img", "{}.gif".format(btn))
+                print(img_file)
                 img = PhotoImage(file=img_file)
                 attr = "btn_{}".format(btn)
                 btn = Button(self, image=img, command=callback)
@@ -154,6 +155,7 @@ def main():
                             {'insert':test_callback,
                              'select':lambda :grid.update_data(sql_get_data),
                              'magic':test_callback,
+                             #'udpate': test_callback,
                             }
                            )
 

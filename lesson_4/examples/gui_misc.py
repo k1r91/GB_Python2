@@ -58,7 +58,7 @@ class TableGrid(Frame):
         self.rebuild(len(titles), rows)
 
         # Размещаем текущий объект self в родительском виджете parent
-        self.pack()            
+        self.pack()
 
     def _create_scroll(self):
         ''' Обёртка для создания прокрутки внутри Frame.

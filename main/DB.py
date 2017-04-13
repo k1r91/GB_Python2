@@ -66,10 +66,21 @@ class Sqlite3Db:
                     (7, "Норильский никель", ""),
                     (8, "МТС", ""),
                     (9, "Татнефть", ""),
-                    (10, "Мечел", "")'''
+                    (10, "Мечел", ""),
+                    (11, "Газстройкомплект", ""),
+                    (12, "МеталлГазСнаб", ""),
+                    (13, "МУ №5", ""),
+                    (14, "СМУ №6", ""),
+                    (15, "МУ №15", ""),
+                    (16, "Уралмаш Завод", ""),
+                    (17, "Microsoft", ""),
+                    (18, "Apple", ""),
+                    (19, "Intel Corporation", ""),
+                    (20, "Samsung", "")'''
                     ]
             for query in queries:
                 cursor.execute(query)
+            print("Database {} was flushed".format(self.DB_NAME))
 
 
 class DatabaseNotFoundException(Exception):
@@ -83,7 +94,7 @@ class DatabaseNotFoundException(Exception):
 
 
 def main():
-    db = DB()
+    db = Sqlite3Db()
     db.flush()
 
 if __name__ == '__main__':
